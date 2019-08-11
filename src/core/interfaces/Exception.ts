@@ -1,4 +1,4 @@
 export interface Exception {
-    errorCode: string,
-    errorMessage: string
+    errorCode: string;
+    errorMessage: string;
 }

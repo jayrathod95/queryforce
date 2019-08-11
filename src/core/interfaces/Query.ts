@@ -1,3 +1,3 @@
 export interface Query {
-    getQueryString();
+    getQueryString(): void;
 }

@@ -4,20 +4,20 @@
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.37.0"
+		"vscode": "^1.33.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:extension.editor.open"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.editor.open",
+				"title": "Open SOQL Editor"
 			}
 		]
 	},

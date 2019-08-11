@@ -29,10 +29,7 @@ export class Org {
     }
 
     oAuthenticate() {
-        return new Promise((onsuccess: (OrgInstance), onfail: (Exception)) => {
-            let orgInstance: OrgInstance = new OrgInstance();
-            //onsuccess(orgInstance);
-        });
+        
     }
 
 }
