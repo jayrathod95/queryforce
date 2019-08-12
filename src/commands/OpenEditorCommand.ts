@@ -1,6 +1,7 @@
 import { Command } from "../core/interfaces/Command";
 import { State} from "../state-handler/State";
-import * as 'vsco de' from 'vscode';
+import * as vscode from 'vscode';
+import { ViewUtils } from "../view/ViewUtils";
 
 export class OpenEditorCommand implements Command{
    commandName: string = 'extension.editor.open';   
@@ -8,7 +9,10 @@ export class OpenEditorCommand implements Command{
 
    onCommandExecute(state: State): void {
       console.log('OpenEditorCommand called');
+      
    }
+
+   
 
 
 
