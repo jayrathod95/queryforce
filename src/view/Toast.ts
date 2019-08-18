@@ -4,7 +4,7 @@ export class Toast {
     type: string;
     message: string;
     sticky: boolean;
-    modal?: boolean
+    modal?: boolean;
 
     constructor(message: string, type: string = 'success', sticky: boolean = false,modal:boolean = false) {
         this.type = type;
