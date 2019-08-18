@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import {State} from "../state-handler/State";
+import {State} from "../../state-handler/State";
 
 
 export class TextEditor {

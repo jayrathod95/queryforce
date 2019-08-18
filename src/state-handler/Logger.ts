@@ -1,13 +1,13 @@
 import {Uri} from "vscode";
 import * as fs from 'fs';
 import {State} from "./State";
-import {Toast} from "../view/Toast";
+import {Toast} from "../view/utils/Toast";
 import {Constants} from "../core/Constants";
 
 export class Logger {
     static logFile: Uri;
 
-    logError(err: any): void {
+    static logError(err: any): void {
        Logger.logFile = Uri.file(`${State.EXTENSION_HOME}\\logs\\log_${new Date().toISOString().slice(0,10)}.txt`);
        if(fs.existsSync(Logger.logFile.fsPath)){
            fs.appendFile(Logger.logFile.fsPath,err,(err)=>{

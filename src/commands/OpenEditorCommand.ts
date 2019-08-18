@@ -1,11 +1,11 @@
 import { Command } from "../core/interfaces/Command";
 import { State} from "../state-handler/State";
 import * as vscode from 'vscode';
-import { ViewUtils } from "../view/ViewUtils";
-import {TextEditor} from "../view/TextEditor";
+import { ViewUtils } from "../view/utils/ViewUtils";
+import {TextEditor} from "../view/utils/TextEditor";
 
 export class OpenEditorCommand implements Command{
-   commandName: string = 'extension.editor.open';   
+   commandName: string = 'queryforce.editor.open';
    commandLabel: string = 'Open SOQL Editor';
 
    onCommandExecute(state: State): void {

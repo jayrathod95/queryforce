@@ -10,16 +10,47 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.editor.open"
+		"onCommand:queryforce.editor.open",
+		"onView:queryforce-explorer"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"title": "Queryforce",
+					"id": "queryforce",
+					"icon": "media/outline_storage_black_36dp.png"
+				}
+			]
+		},
+
+		"views": {
+			"queryforce":[
+				{
+					"name": "Queryforce Explorer",
+					"id": "queryforce-explorer"
+				}
+			]
+		},
+		
 		"commands": [
 			{
-				"command": "extension.editor.open",
+				"command": "queryforce.editor.open",
 				"title": "QF: Open SOQL Editor"
+			},{
+				"command": "queryforce.connection.add",
+				"title": "Add a connection"
 			}
-		]
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "queryforce.connection.add",
+					"when": "view == queryforce-explorer"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

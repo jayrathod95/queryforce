@@ -10,9 +10,9 @@ export class Org {
     type: OrgType;
     username: string;
     password: string;
-    securityToken: string;
+    securityToken?: string;
 
-    constructor(type: OrgType, username: string, password: string, securityToken: string) {
+    constructor(type: OrgType, username: string, password: string, securityToken?: string) {
         this.type = type;
         this.username = username;
         this.password = password;

@@ -3,6 +3,7 @@ import { OpenEditorCommand } from './commands/OpenEditorCommand';
 import { State } from './state-handler/State';
 import {ExtensionContext} from "vscode";
 import {Logger} from "./state-handler/Logger";
+import {OrgExplorerDataProvider} from "./view/trees/OrgExplorerDataProvider";
 
 export class Manifest{
 
@@ -28,5 +29,12 @@ export class Manifest{
       Manifest.extensionContext.subscriptions.push(
          openEditorDisp
       );
+
+      return Manifest;
    }
+
+   static registerTreeViews() {
+      vscode.window.registerTreeDataProvider('queryforce-explorer',new OrgExplorerDataProvider());
+   }
+
 }
