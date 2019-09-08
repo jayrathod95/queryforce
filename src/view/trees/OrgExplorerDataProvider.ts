@@ -1,29 +1,47 @@
 import {Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState} from "vscode";
+import {State} from "../../state-handler/State";
 
-export class OrgExplorerDataProvider implements TreeDataProvider<Org>{
-    private _onDidChangeTreeData: EventEmitter<Org> = new EventEmitter<Org>();
-    onDidChangeTreeData: Event<Org | undefined | null> = this._onDidChangeTreeData.event;
+export class OrgExplorerDataProvider implements TreeDataProvider<OrgTreeItem>{
+
+    static VIEW_ID = 'queryforce-explorer';
+
+    private _onDidChangeTreeData: EventEmitter<OrgTreeItem> = new EventEmitter<OrgTreeItem>();
+    onDidChangeTreeData: Event<OrgTreeItem | undefined | null> = this._onDidChangeTreeData.event;
 
     refresh(): void{
         this._onDidChangeTreeData.fire();
     }
 
-    getParent(element: Org): Thenable<Org | undefined | null> | Org | undefined | null {
+    getParent(element: OrgTreeItem): Thenable<OrgTreeItem | undefined | null> | OrgTreeItem | undefined | null {
         return undefined;
     }
 
-    getTreeItem(element: Org): TreeItem | Thenable<TreeItem> {
+    getTreeItem(element: OrgTreeItem): TreeItem | Thenable<TreeItem> {
         return element;
     }
 
-    getChildren(element?: Org): Thenable<Org[]> {
-        if(!element) return Promise.resolve(Array.of(new Org('Org 1',TreeItemCollapsibleState.Collapsed),new Org('Org 2',TreeItemCollapsibleState.Collapsed)));
-        else return Promise.resolve([]);
+    getChildren(element?: OrgTreeItem): Thenable<OrgTreeItem[]> {
+        return !element?new Promise((resolve, reject) => {
+            console.log('test1');
+            State.getConnections().then((connections => {
+                console.log('test3');
+                console.log(JSON.stringify(connections));
+                let orgs: Array<OrgTreeItem> = [];
+                connections.forEach(((value, key, map) => {
+                    orgs.push(new OrgTreeItem(key,TreeItemCollapsibleState.None));
+                }));
+                console.log(orgs);
+                resolve(orgs);
+            }),reason => {
+                console.log('test2');
+                console.log(reason);
+                reject(reason);
+            });
+        }): Promise.reject(Array.of<OrgTreeItem>());
     }
-
 }
 
-export class Org extends TreeItem{
+export class OrgTreeItem extends TreeItem{
     constructor(label:string,collapsibleState: TreeItemCollapsibleState){
         super(label,collapsibleState);
     }

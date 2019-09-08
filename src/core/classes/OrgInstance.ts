@@ -8,22 +8,25 @@ export class OrgInstance extends Org {
 
     instanceUrl: string;
     accessToken: string;
+    refreshToken?: string;
 
-    constructor(type: OrgType, username: string, password: string, securityToken: string, instanceUrl: string, accessToken: string) {
-        super(type, username, password, securityToken);
+    constructor(org: Org, instanceUrl: string, accessToken: string, refreshToken?: string) {
+        super(org.type, org.username, org.password, org.securityToken);
         this.instanceUrl = instanceUrl;
         this.accessToken = accessToken;
+        this.refreshToken= refreshToken;
     }
 
-    reOAuthenticate(){
+
+    reOAuthenticate() {
 
     }
 
-    refreshMetadata(){
+    refreshMetadata() {
 
     }
 
-    executeQuery(query : string){
+    executeQuery(query: string) {
 
     }
 

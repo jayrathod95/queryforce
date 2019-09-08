@@ -1,7 +1,7 @@
-import { State } from "../../state-handler/State";
 
-export interface Command{
-   commandName: string;
-   commandLabel: string;
-   onCommandExecute(state: State): void;
+export abstract class Command {
+    static commandName: string;
+    static commandLabel: string;
+
+    abstract onCommandExecute(): void;
 }

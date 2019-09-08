@@ -4,6 +4,9 @@ import {Manifest} from "../Manifest";
 import {Org} from "../core/classes/Org";
 import {OrgType} from "../core/interfaces/OrgType";
 import {Logger} from "./Logger";
+import {Utils} from "../core/Utils";
+import {Constants} from "../core/Constants";
+import {OrgExplorerDataProvider} from "../view/trees/OrgExplorerDataProvider";
 
 export class State {
 
@@ -23,9 +26,7 @@ export class State {
         if (!fs.existsSync(State.EXTENSION_HOME)) {
             fs.mkdirSync(State.EXTENSION_HOME, {recursive: true});
         }
-        context.globalState.update('orgs', []);
-        State.saveConnection(new Org(OrgType.SANDBOX, 'test@test.com', '123123'));
-        State.saveConnection(new Org(OrgType.SANDBOX, 'test@test.com1', '123123'));
+        State.saveConnection(new Org(OrgType.SANDBOX, 'test@test.com2', '123123'));
     }
 
     /**
@@ -49,12 +50,8 @@ export class State {
      * Return a map of username vs org details
      */
     static getConnections(): Thenable<Map<string, Org>> {
-        let orgs = Manifest.extensionContext.globalState.get('orgs');
-        if (orgs) {
-            return Promise.resolve(orgs as Map<string, Org>);
-        } else {
-            return Promise.reject(Array.of());
-        }
+        let orgs = Manifest.extensionContext.globalState.get(Constants.DS_KEY_ORGS);
+        return Promise.resolve(orgs ? orgs as Map<string, Org> : new Map<string, Org>());
     }
 
     /**
@@ -64,9 +61,17 @@ export class State {
     static saveConnection(org: Org): Thenable<void> {
         return new Promise((resolve, reject) => {
             State.getConnections().then((orgs) => {
+                if (!orgs || !orgs.size) {
+                    orgs = new Map<string, Org>();
+                }
                 orgs.set(org.username, org);
-                Manifest.extensionContext.globalState.update('orgs', orgs).then(value => resolve(value), () => reject());
-            });
+                Manifest.extensionContext.globalState.update(Constants.DS_KEY_ORGS, orgs).then(value => {
+                    (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
+                    return resolve(value);
+                }, () => reject());
+            }, (reason => {
+                Utils.log('##: ', reason);
+            }));
         });
     }
 
@@ -88,27 +93,52 @@ export class State {
         });
     }
 
-   /**
-    * Pretty much self explanatory name, ain't it!
-    * @param username
-    */
+    /**
+     * Pretty much self explanatory name, ain't it!
+     * @param username
+     */
     static removeConnection(username: string): Thenable<void> {
         return new Promise((resolve, reject) => {
             State.getConnections().then(connections => {
                 if (connections.has(username)) {
                     connections.delete(username);
-                    State.saveConnections(connections).then(value => resolve(value), reason => reject(reason));
+                    State.saveConnections(connections).then(value => {
+                        (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
+                        return resolve(value);
+                    }, reason => reject(reason));
                 }
             });
         });
     }
 
-   /**
-    *
-    * @param connections
-    */
-    private static saveConnections(connections: Map<string,Org>): Thenable<void>{
-       return Manifest.extensionContext.globalState.update('orgs',connections);
+    /**
+     *
+     * @param connections
+     */
+    private static saveConnections(connections: Map<string, Org>): Thenable<void> {
+        return Manifest.extensionContext.globalState.update(Constants.DS_KEY_ORGS, connections);
+    }
+
+    static setDefaultOrg(username: string) {
+        return Manifest.extensionContext.globalState.update(Constants.DS_KEY_DEFAULT_ORG, username);
+    }
+
+    static getDefaultOrg(): Thenable<Org> {
+        return new Promise((resolve, reject) => {
+            State.getDefaultOrgUsername().then(username => {
+                return State.getConnection(username);
+            }, reason => {
+                reject(reason);
+            });
+        });
+    }
+
+    public static getDefaultOrgUsername(): Thenable<string> {
+        let defaultOrg = Manifest.extensionContext.globalState.get(Constants.DS_KEY_DEFAULT_ORG);
+        if (defaultOrg) {
+            return Promise.resolve(defaultOrg as string);
+        }
+        return Promise.reject('No default org found');
     }
 
 }

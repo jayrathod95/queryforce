@@ -4,11 +4,11 @@ import * as vscode from 'vscode';
 import { ViewUtils } from "../view/utils/ViewUtils";
 import {TextEditor} from "../view/utils/TextEditor";
 
-export class OpenEditorCommand implements Command{
-   commandName: string = 'queryforce.editor.open';
-   commandLabel: string = 'Open SOQL Editor';
+export class OpenEditorCommand extends Command{
+   static commandName: string = 'queryforce.editor.open';
+   static commandLabel: string = 'Open SOQL Editor';
 
-   onCommandExecute(state: State): void {
+   onCommandExecute(): void {
       console.log('OpenEditorCommand called');
       let editor = new TextEditor('SOQL');
       editor.show();

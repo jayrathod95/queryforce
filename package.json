@@ -24,23 +24,22 @@
 				}
 			]
 		},
-
 		"views": {
-			"queryforce":[
+			"queryforce": [
 				{
 					"name": "Queryforce Explorer",
 					"id": "queryforce-explorer"
 				}
 			]
 		},
-		
 		"commands": [
 			{
 				"command": "queryforce.editor.open",
 				"title": "QF: Open SOQL Editor"
-			},{
+			},
+			{
 				"command": "queryforce.connection.add",
-				"title": "Add a connection"
+				"title": "QF: Add New Connection"
 			}
 		],
 		"menus": {
@@ -71,6 +70,7 @@
 		"vscode-test": "^1.0.2"
 	},
 	"dependencies": {
-		"fs-extra": "^8.1.0"
+		"fs-extra": "^8.1.0",
+		"jsforce": "^1.9.2"
 	}
 }
