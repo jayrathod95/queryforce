@@ -40,12 +40,23 @@
 			{
 				"command": "queryforce.connection.add",
 				"title": "QF: Add New Connection"
+			},
+			{
+				"command": "queryforce.connection.default",
+				"title": "Set as default org"
+
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
 					"command": "queryforce.connection.add",
+					"when": "view == queryforce-explorer"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "queryforce.connection.default",
 					"when": "view == queryforce-explorer"
 				}
 			]

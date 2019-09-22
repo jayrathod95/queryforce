@@ -1,9 +1,9 @@
 /**
  * @description Represents a Salesforce org.
  * */
-import {OrgType} from "../interfaces/OrgType";
+import {OrgType} from "./OrgType";
 import {OrgInstance} from "./OrgInstance";
-import {SForce} from "../SForce";
+import {SForce} from "./SForce";
 
 
 
@@ -12,13 +12,15 @@ export class Org {
     username: string;
     password: string;
     securityToken?: string;
+    defaultConnection?: boolean = false;
 
-    constructor(type: OrgType, username: string, password: string, securityToken?: string) {
+    constructor(type: OrgType, username: string, password: string, securityToken?: string, defaultConnection:boolean = false) {
         this.type = type;
         this.username = username;
         this.password = password;
         this.securityToken = securityToken;
-        Object.seal(this);
+        this.defaultConnection = defaultConnection;
+        //Object.seal(this);
     }
 
     getLoginUrl() {
@@ -30,6 +32,10 @@ export class Org {
     }
 
     login() : void{
+
+    }
+
+    stringify(): void{
 
     }
 

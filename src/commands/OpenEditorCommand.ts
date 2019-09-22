@@ -1,4 +1,4 @@
-import { Command } from "../core/interfaces/Command";
+import { Command } from "../core/Command";
 import { State} from "../state-handler/State";
 import * as vscode from 'vscode';
 import { ViewUtils } from "../view/utils/ViewUtils";

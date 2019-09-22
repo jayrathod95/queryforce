@@ -1,6 +1,6 @@
 import {Field} from "./Field";
-import {ComparisonOperator} from "../interfaces/ComparisonOperator";
-import {LogicalOperator} from "../interfaces/LogicalOperator";
+import {ComparisonOperator} from "./ComparisonOperator";
+import {LogicalOperator} from "./LogicalOperator";
 
 export class Filter {
     field : Field;

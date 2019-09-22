@@ -2,7 +2,7 @@
  * Represents an authenticated org.
  */
 import {Org} from "./Org";
-import {OrgType} from "../interfaces/OrgType";
+import {OrgType} from "./OrgType";
 
 export class OrgInstance extends Org {
 

@@ -1,4 +1,4 @@
-import {Query} from "../interfaces/Query";
+import {Query} from "./Query";
 import {Filter} from "./Filter";
 import {Field} from "./Field";
 

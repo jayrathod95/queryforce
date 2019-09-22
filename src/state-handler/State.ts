@@ -1,12 +1,13 @@
 import {ExtensionContext, Uri} from "vscode";
 import * as fs from 'fs';
 import {Manifest} from "../Manifest";
-import {Org} from "../core/classes/Org";
-import {OrgType} from "../core/interfaces/OrgType";
+import {Org} from "../core/Org";
+import {OrgType} from "../core/OrgType";
 import {Logger} from "./Logger";
 import {Utils} from "../core/Utils";
 import {Constants} from "../core/Constants";
 import {OrgExplorerDataProvider} from "../view/trees/OrgExplorerDataProvider";
+import {Dao} from "./Dao";
 
 export class State {
 
@@ -50,8 +51,17 @@ export class State {
      * Return a map of username vs org details
      */
     static getConnections(): Thenable<Map<string, Org>> {
-        let orgs = Manifest.extensionContext.globalState.get(Constants.DS_KEY_ORGS);
-        return Promise.resolve(orgs ? orgs as Map<string, Org> : new Map<string, Org>());
+        return new Promise((resolve, reject) => {
+            Dao.getPreferences(Constants.DS_KEY_ORGS, {}).then(value => {
+                console.log('aaaa-bbbb');
+                console.log(value);
+                if (value) {
+                    resolve(value);
+                } else {
+                    reject();
+                }
+            });
+        });
     }
 
     /**
@@ -61,14 +71,26 @@ export class State {
     static saveConnection(org: Org): Thenable<void> {
         return new Promise((resolve, reject) => {
             State.getConnections().then((orgs) => {
-                if (!orgs || !orgs.size) {
-                    orgs = new Map<string, Org>();
-                }
-                orgs.set(org.username, org);
+
+                // @ts-ignore
+                orgs[org.username] = org;
+                Dao.updatePreferences(Constants.DS_KEY_ORGS, function () {
+                    let plainObj = {};
+                    for (let key of Object.keys(orgs)) {
+                        // @ts-ignore
+                        plainObj[key] = orgs[key];
+                    }
+                    console.log(JSON.stringify(plainObj));
+                    return plainObj;
+                }()).then(() => {
+                    (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
+                    return resolve();
+                }, () => reject());
+                /*
                 Manifest.extensionContext.globalState.update(Constants.DS_KEY_ORGS, orgs).then(value => {
                     (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
                     return resolve(value);
-                }, () => reject());
+                }, () => reject());*/
             }, (reason => {
                 Utils.log('##: ', reason);
             }));
@@ -119,26 +141,34 @@ export class State {
         return Manifest.extensionContext.globalState.update(Constants.DS_KEY_ORGS, connections);
     }
 
-    static setDefaultOrg(username: string) {
-        return Manifest.extensionContext.globalState.update(Constants.DS_KEY_DEFAULT_ORG, username);
-    }
-
-    static getDefaultOrg(): Thenable<Org> {
+    static setDefaultOrg(username: string) : Thenable<void> {
         return new Promise((resolve, reject) => {
-            State.getDefaultOrgUsername().then(username => {
-                return State.getConnection(username);
-            }, reason => {
-                reject(reason);
+            Dao.updatePreferences(Constants.DS_KEY_DEFAULT_ORG,username).then(value => {
+                (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
+                resolve();
             });
         });
     }
 
-    public static getDefaultOrgUsername(): Thenable<string> {
-        let defaultOrg = Manifest.extensionContext.globalState.get(Constants.DS_KEY_DEFAULT_ORG);
-        if (defaultOrg) {
-            return Promise.resolve(defaultOrg as string);
-        }
-        return Promise.reject('No default org found');
+    /*
+    static getDefaultOrg(): Thenable<Org> | undefined {
+        return new Promise((resolve, reject) => {
+            State.getDefaultOrgUsername().then(username => {
+                if (username) {
+                    return State.getConnection(username);
+                }else { reject(); }
+            }, reason => {
+                reject(reason);
+            });
+        });
+    }*/
+
+    public static getDefaultOrgUsername(): Thenable<string | undefined> {
+        return new Promise((resolve, reject) => {
+           Dao.getPreferences(Constants.DS_KEY_DEFAULT_ORG,'').then(value => {
+               resolve(value);
+           });
+        });
     }
 
 }

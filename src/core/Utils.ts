@@ -1,4 +1,4 @@
-import {OrgType} from "./interfaces/OrgType";
+import {OrgType} from "./OrgType";
 
 export class Utils {
     static log(...params: any){
