@@ -53,8 +53,6 @@ export class State {
     static getConnections(): Thenable<Map<string, Org>> {
         return new Promise((resolve, reject) => {
             Dao.getPreferences(Constants.DS_KEY_ORGS, {}).then(value => {
-                console.log('aaaa-bbbb');
-                console.log(value);
                 if (value) {
                     resolve(value);
                 } else {
@@ -80,7 +78,6 @@ export class State {
                         // @ts-ignore
                         plainObj[key] = orgs[key];
                     }
-                    console.log(JSON.stringify(plainObj));
                     return plainObj;
                 }()).then(() => {
                     (Manifest.treeDataProviders.get(OrgExplorerDataProvider.VIEW_ID) as OrgExplorerDataProvider).refresh();
@@ -171,4 +168,15 @@ export class State {
         });
     }
 
+    static getDefaultOrg() : Thenable<Org> {
+        return new Promise((resolve, reject) => {
+           State.getDefaultOrgUsername().then(username => {
+               if (!username) {
+                   reject();
+                   return;
+               }
+               State.getConnection(username).then(value => resolve(value));
+           },reason => reject(reason));
+        });
+    }
 }

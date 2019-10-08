@@ -3,6 +3,7 @@
  */
 import {Org} from "./Org";
 import {OrgType} from "./OrgType";
+import {SForce} from "./SForce";
 
 export class OrgInstance extends Org {
 
@@ -26,8 +27,11 @@ export class OrgInstance extends Org {
 
     }
 
-    executeQuery(query: string) {
-
+    executeQuery(soql: string) : Thenable<string> {
+        return new Promise((resolve, reject) => {
+            let db = new SForce.Database(this);
+            db.query(soql);
+        });
     }
 
 

@@ -49,19 +49,23 @@ export class Dao {
 
     static getPreferences(key: string, defaultValue: any): Thenable<any> {
         return new Promise((resolve, reject) => {
-            if (fs.existsSync(this.preferencesFile.fsPath)) {
-                fs.readFile(this.preferencesFile.fsPath, 'utf8',(err, data) => {
-                    console.log('data----');
-                    console.log(data);
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    let parsedData = JSON.parse(data);
-                    console.log(key in parsedData);
-                    resolve(key in parsedData ? parsedData[key]: defaultValue);
-                });
-            }
+            Dao.readFile(this.preferencesFile.fsPath).then(data => {
+                let parsedData = JSON.parse(data);
+                resolve(key in parsedData ? parsedData[key]: defaultValue);
+            },reason => {
+                reject(reason);
+            });
+        });
+    }
+
+    static readFile(fsPath: string): Thenable<string>{
+        return new Promise((resolve, reject) => {
+           if(fs.existsSync(fsPath)){
+               fs.readFile(fsPath,'utf8',(err, data) => {
+                   if(!err) {resolve(data); }
+                   else { reject(err); }
+               });
+           }
         });
     }
 

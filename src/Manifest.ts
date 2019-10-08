@@ -7,6 +7,7 @@ import {OrgExplorerDataProvider, OrgTreeItem} from "./view/trees/OrgExplorerData
 import {AddConnectionCommand} from "./commands/AddConnectionCommand";
 import {SetDefaultConnectionCommand} from "./commands/SetDefaultConnectionCommand";
 import { Dao } from './state-handler/Dao';
+import {RunSOQLCommand} from "./commands/RunSOQLCommand";
 
 export class Manifest{
 
@@ -34,11 +35,14 @@ export class Manifest{
       let addConnectionDisp = vscode.commands.registerCommand(AddConnectionCommand.commandName,addConnectionCmd.onCommandExecute);
       let setDefaultConnectionCmd = new SetDefaultConnectionCommand();
       let setDefaultConnectionDisp = vscode.commands.registerCommand(SetDefaultConnectionCommand.commandName,setDefaultConnectionCmd.onCommandExecute);
+      let runSOQLCommand = new RunSOQLCommand();
+      let runSOQLDisp = vscode.commands.registerCommand(RunSOQLCommand.commandName,runSOQLCommand.onCommandExecute);
 
       Manifest.extensionContext.subscriptions.push(
          openEditorDisp,
           addConnectionDisp,
-          setDefaultConnectionDisp
+          setDefaultConnectionDisp,
+          runSOQLDisp
       );
 
       return Manifest;

@@ -1,3 +1,4 @@
+import {CommandArgs} from "./CommandArgs";
 
 export abstract class Command {
     static commandName: string;
