@@ -19,9 +19,6 @@ export class Dao {
                     if (err) {
                         reject(err);
                     }
-                    console.log(data);
-                    console.log(JSON.stringify(value));
-
                     let parsedData = JSON.parse(data);
                     parsedData[key] = value;
                     fs.writeFile(this.preferencesFile.fsPath, JSON.stringify(parsedData), 'utf8', err1 => {

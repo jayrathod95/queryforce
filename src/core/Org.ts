@@ -23,19 +23,19 @@ export class Org {
         //Object.seal(this);
     }
 
-    getLoginUrl() {
-        return (this.type === OrgType.PRODUCTION || this.type === OrgType.DEVELOPER) ? 'https://login.salesforce.com' : this.type == OrgType.SANDBOX ? 'https://test.salesforce.com' : '';
+    static getLoginUrl(org :Org) {
+        return (org.type === OrgType.PRODUCTION || org.type === OrgType.DEVELOPER) ? 'https://login.salesforce.com' : org.type == OrgType.SANDBOX ? 'https://test.salesforce.com' : '';
     }
 
-    getOAuthUrl() {
-        return (this.type === OrgType.PRODUCTION || this.type === OrgType.DEVELOPER) ? 'https://login.salesforce.com/services/oauth2/token' : this.type == OrgType.SANDBOX ? 'https://test.salesforce.com/services/oauth2/token' : '';
+    static getOAuthUrl(org: Org) {
+        return (org.type === OrgType.PRODUCTION || org.type === OrgType.DEVELOPER) ? 'https://login.salesforce.com/services/oauth2/token' : org.type == OrgType.SANDBOX ? 'https://test.salesforce.com/services/oauth2/token' : '';
     }
 
-    login() : void{
+    public login() : void{
 
     }
 
-    stringify(): void{
+    public stringify(): void{
 
     }
 

@@ -101,8 +101,8 @@ export class State {
     static getConnection(username: string): Thenable<Org> {
         return new Promise((resolve, reject) => {
             State.getConnections().then(value => {
-                if (value.has(username)) {
-                    resolve(value.get(username));
+                if (username in value) {
+                    resolve((value as any)[username]);
                 } else {
                     reject();
                 }

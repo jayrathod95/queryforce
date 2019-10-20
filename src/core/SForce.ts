@@ -1,16 +1,21 @@
 import {OrgInstance} from "./OrgInstance";
 import {Org} from "./Org";
+import List = Mocha.reporters.List;
 
 export class SForce {
     static login(org: Org): Thenable<OrgInstance> {
         return new Promise<OrgInstance>((resolve, reject) => {
             let jsforce = require('jsforce');
-            let conn = new jsforce.Connection({loginUrl: org.getLoginUrl()});
+            console.log(Org.getLoginUrl(org));
+            let conn = new jsforce.Connection({loginUrl: Org.getLoginUrl(org)});
             conn.login(org.username, org.password + org.securityToken, function (err: any, userInfo: any) {
                 if (err) {
                     reject(err.message);
-                }else{
-                    let instance =new OrgInstance(org,conn.instanceUrl,conn.accessToken, conn.refreshToken);
+                } else {
+                    console.log(userInfo);
+                    console.log(conn.accessToken);
+
+                    let instance = new OrgInstance(org, conn.instanceUrl, conn.accessToken, conn.refreshToken);
                     resolve(instance);
                 }
             });
@@ -22,15 +27,28 @@ export class SForce {
     }
 
     static Database = class {
-        org: Org;
+        org: OrgInstance;
 
-        constructor(org:Org) {
+        constructor(org: OrgInstance) {
             this.org = org;
         }
 
-        query(soql: string): Thenable<string>{
-
-            return new Promise((resolve, reject) => {});
+        query(soql: string): Thenable<Array<any>> {
+            return new Promise((resolve, reject) => {
+                let records : Array<any> = new Array<any>();
+                let jsforce = require('jsforce');
+                let conn = new jsforce.Connection({
+                    instanceUrl: this.org.instanceUrl,
+                    accessToken: this.org.accessToken
+                });
+                conn.query(soql).on('record', (record: any) => {
+                    records.push(record);
+                }).on('error',(err: any)=>{
+                    reject(err);
+                }).on('end',()=>{
+                    resolve(records);
+                }).run();
+            });
         }
 
     };
