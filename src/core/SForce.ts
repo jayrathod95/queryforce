@@ -33,7 +33,7 @@ export class SForce {
             this.org = org;
         }
 
-        query(soql: string): Thenable<Array<any>> {
+        query(soql: string): Thenable<any> {
             return new Promise((resolve, reject) => {
                 let records : Array<any> = new Array<any>();
                 let jsforce = require('jsforce');
@@ -41,12 +41,12 @@ export class SForce {
                     instanceUrl: this.org.instanceUrl,
                     accessToken: this.org.accessToken
                 });
-                conn.query(soql).on('record', (record: any) => {
+                let query = conn.query(soql).on('record', (record: any) => {
                     records.push(record);
                 }).on('error',(err: any)=>{
                     reject(err);
                 }).on('end',()=>{
-                    resolve(records);
+                    resolve({records: records,totalSize: query.totalSize});
                 }).run();
             });
         }

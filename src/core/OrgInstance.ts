@@ -27,12 +27,11 @@ export class OrgInstance extends Org {
 
     }
 
-    executeQuery(soql: string) : Thenable<string> {
+    executeQuery(soql: string) : Thenable<any> {
         return new Promise((resolve, reject) => {
             let db = new SForce.Database(this);
             db.query(soql).then(value => {
-                console.log(value);
-                resolve();
+                resolve(value);
             },reason => {
                 console.log(reason);
                 return reject(reason);
